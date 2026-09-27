@@ -1,0 +1,24 @@
+name: CI Orchestrator
+
+on:
+  push:
+    branches: [ "main" ]
+    paths-ignore:
+      - '**.md'
+      - LICENSE
+      - 'translations/**'
+  pull_request:
+    branches: [ "main" ]
+    paths-ignore:
+      - '**.md'
+      - LICENSE
+      - 'translations/**'
+
+permissions:
+  contents: read
+
+jobs:
+
+  application-checks:
+    name: Application Quality Assurance
+    uses: ./.github/workflows/application-quality-assurance.yml
