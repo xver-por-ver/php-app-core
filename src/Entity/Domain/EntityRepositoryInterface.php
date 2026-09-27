@@ -4,9 +4,22 @@ namespace Xver\PhpAppCoreBundle\Entity\Domain;
 
 /**
  * @template TEntity of EntityInterface
+ * @template TFilter of EntityFilterInterface
  */
 interface EntityRepositoryInterface
 {
+    /**
+     * @param TFilter $filter
+     *
+     * @return EntityCollection<TEntity>
+     */
+    public function filter(EntityFilterInterface $filter): EntityCollection;
+
+    /**
+     * @param TFilter $filter
+     */
+    public function countFilter(EntityFilterInterface $filter): int;
+
     /**
      * Mark entity to be persisted into datastore when flush is invoked.
      *
