@@ -1,9 +1,10 @@
 <?php
 
+declare(strict_types=1);
+
 namespace Xver\PhpAppCoreBundle\Entity\Domain;
 
 use Doctrine\Common\Collections\ArrayCollection;
-use InvalidArgumentException;
 
 /**
  * @template TEntity of EntityInterface
@@ -24,12 +25,12 @@ class EntityCollection extends ArrayCollection
     {
         foreach ($this->elements as $key => $item) {
             if (false === is_int($key)) {
-                throw new InvalidArgumentException(
+                throw new \InvalidArgumentException(
                     sprintf('Key must be an integer, %s given.', gettype($key))
                 );
             }
             if (false === is_a($item, $this->type())) {
-                throw new InvalidArgumentException(
+                throw new \InvalidArgumentException(
                     sprintf('Found item which is not typed <%s>', $this->type())
                 );
             }
@@ -79,7 +80,7 @@ class EntityCollection extends ArrayCollection
     public function offsetGet(mixed $offset): ?EntityInterface
     {
         if (false === is_int($offset)) {
-            throw new InvalidArgumentException(
+            throw new \InvalidArgumentException(
                 sprintf('Key must be an integer, %s given.', gettype($offset))
             );
         }
@@ -88,8 +89,13 @@ class EntityCollection extends ArrayCollection
             return null;
         }
 
-        /** @var TEntity $entity */
+        /** @var null|TEntity $entity */
         $entity = parent::offsetGet($offset);
+        if (false === is_a($entity, $this->type()) && null !== $entity) {
+            throw new \UnexpectedValueException(
+                sprintf('Expected an instance of <%s> or null, got <%s>.', $this->type(), get_debug_type($entity))
+            );
+        }
 
         return $entity;
     }
@@ -98,7 +104,7 @@ class EntityCollection extends ArrayCollection
     public function contains(mixed $element): bool
     {
         if (false === is_a($element, static::type())) {
-            throw new InvalidArgumentException(
+            throw new \InvalidArgumentException(
                 sprintf('Found item which is not typed <%s>', $this->type())
             );
         }
