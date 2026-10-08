@@ -20,7 +20,7 @@ use Xver\PhpAppCoreBundle\Entity\Domain\EntityInterface;
 class EntityCollectionQueryResponseTest extends TestCase
 {
     #[DataProvider('dataQueryResponse')]
-    public function testQueryResponse($arrayItemsAmount, $limit, $page, $count, $hasPrevPage, $hasNextPage): void
+    public function testQueryResponse(int $arrayItemsAmount, int $limit, int $page, int $count, bool $hasPrevPage, bool $hasNextPage): void
     {
         $entitiesArray = [];
         for ($i = 0; $i < $arrayItemsAmount; ++$i) {

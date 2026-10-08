@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 namespace Xver\PhpAppCoreBundle\Exception\Domain;
 
 use Symfony\Component\Translation\TranslatableMessage;

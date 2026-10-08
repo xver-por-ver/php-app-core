@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 namespace Xver\PhpAppCoreBundle\Tests\unit\Entity\Domain;
 
 use Doctrine\Common\Collections\ArrayCollection;
@@ -84,6 +86,20 @@ class EntityCollectionTest extends TestCase
     {
         $entityObjectCollection = new EntityCollection([]);
         $this->assertNull($entityObjectCollection->offsetGet(1));
+    }
+
+    public function testOffsetGetWithInvalidItemThrowsUnexpectedValueException(): void
+    {
+        $entityObjectCollection = new EntityCollection([]);
+        $entityObjectCollection->set(0, new \stdClass());
+
+        $this->expectException(\UnexpectedValueException::class);
+        $this->expectExceptionMessageIs(sprintf(
+            'Expected an instance of <%s> or null, got <%s>.',
+            EntityInterface::class,
+            \stdClass::class,
+        ));
+        $entityObjectCollection->offsetGet(0);
     }
 
     public function testContainsWithInvalidArgumentThrowsException(): void

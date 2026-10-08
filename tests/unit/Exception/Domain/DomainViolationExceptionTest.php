@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 namespace Xver\PhpAppCoreBundle\Tests\unit\Exception\Domain;
 
 use PHPUnit\Framework\Attributes\CoversClass;

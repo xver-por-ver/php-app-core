@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 namespace Xver\PhpAppCoreBundle;
 
 use Symfony\Component\DependencyInjection\Extension\ExtensionInterface;
