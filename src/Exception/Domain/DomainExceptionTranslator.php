@@ -19,7 +19,9 @@ final class DomainExceptionTranslator
     {
         $message = $this->traverseExceptionTree($th, $translator);
 
-        return new \Exception(nl2br($message), (int) $th->getCode());
+        $escapedMessage = htmlspecialchars($message, ENT_QUOTES | ENT_SUBSTITUTE, 'UTF-8');
+
+        return new \Exception(nl2br($escapedMessage), (int) $th->getCode());
     }
 
     private function traverseExceptionTree(
