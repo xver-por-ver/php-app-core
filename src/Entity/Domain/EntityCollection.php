@@ -103,12 +103,60 @@ class EntityCollection extends ArrayCollection
     #[\Override]
     public function contains(mixed $element): bool
     {
-        if (false === is_a($element, static::type())) {
+        $this->assertEntityType($element);
+
+        return parent::contains($element);
+    }
+
+    #[\Override]
+    public function add(mixed $element): void
+    {
+        $this->assertEntityType($element);
+        parent::add($element);
+    }
+
+    /**
+     * @psalm-suppress DocblockTypeContradiction
+     * @psalm-suppress RedundantConditionGivenDocblockType
+     */
+    #[\Override]
+    public function set(string|int $key, mixed $value): void
+    {
+        if (false === is_int($key)) {
+            throw new \InvalidArgumentException(
+                sprintf('Key must be an integer, %s given.', gettype($key))
+            );
+        }
+        $this->assertEntityType($value);
+        parent::set($key, $value);
+    }
+
+    /**
+     * @psalm-suppress DocblockTypeContradiction
+     * @psalm-suppress RedundantConditionGivenDocblockType
+     */
+    #[\Override]
+    public function offsetSet(mixed $offset, mixed $value): void
+    {
+        if (null === $offset) {
+            $this->add($value);
+
+            return;
+        }
+        if (false === is_int($offset)) {
+            throw new \InvalidArgumentException(
+                sprintf('Key must be an integer, %s given.', gettype($offset))
+            );
+        }
+        $this->set($offset, $value);
+    }
+
+    private function assertEntityType(mixed $entity): void
+    {
+        if (false === is_a($entity, $this->type())) {
             throw new \InvalidArgumentException(
                 sprintf('Found item which is not typed <%s>', $this->type())
             );
         }
-
-        return parent::contains($element);
     }
 }

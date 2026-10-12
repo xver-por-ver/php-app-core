@@ -40,6 +40,16 @@ class ExceptionTranslatorTest extends TestCase
         $this->assertSame($exceptionMsgHtml . nl2br(PHP_EOL) . $prevExceptionMsgHtml, $translatedException->getMessage());
     }
 
+    public function testHtmlExceptionMessageEscapesMarkupAndPreservesLineBreaks(): void
+    {
+        $exception = new \Exception('<script>alert("x")</script>' . PHP_EOL . '&');
+        $translator = $this->createStub(TranslatorInterface::class);
+
+        $translatedException = new DomainExceptionTranslator()->getTranslatedExceptionAsHtml($exception, $translator);
+
+        $this->assertSame('&lt;script&gt;alert(&quot;x&quot;)&lt;/script&gt;<br />' . PHP_EOL . '&amp;', $translatedException->getMessage());
+    }
+
     public function testTranslatableException(): void
     {
         $exceptionMsg = 'exception message';

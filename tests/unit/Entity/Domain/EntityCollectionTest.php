@@ -88,18 +88,94 @@ class EntityCollectionTest extends TestCase
         $this->assertNull($entityObjectCollection->offsetGet(1));
     }
 
-    public function testOffsetGetWithInvalidItemThrowsUnexpectedValueException(): void
+    public function testSetWithInvalidItemThrowsException(): void
     {
         $entityObjectCollection = new EntityCollection([]);
+
+        $this->expectException(\InvalidArgumentException::class);
         $entityObjectCollection->set(0, new \stdClass());
+    }
+
+    public function testAddWithInvalidItemThrowsException(): void
+    {
+        $entityObjectCollection = new EntityCollection([]);
+
+        $this->expectException(\InvalidArgumentException::class);
+        $entityObjectCollection->add(new \stdClass());
+    }
+
+    public function testAddAppendsValidEntity(): void
+    {
+        $entity = $this->createStub(EntityInterface::class);
+        $collection = new EntityCollection([]);
+
+        $collection->add($entity);
+
+        $this->assertSame([$entity], $collection->toArray());
+    }
+
+    public function testSetWithNonIntegerKeyThrowsException(): void
+    {
+        $collection = new EntityCollection([]);
+
+        $this->expectException(\InvalidArgumentException::class);
+        $collection->set('key', $this->createStub(EntityInterface::class));
+    }
+
+    public function testSetWithValidEntity(): void
+    {
+        $entity = $this->createStub(EntityInterface::class);
+        $collection = new EntityCollection([]);
+
+        $collection->set(2, $entity);
+
+        $this->assertSame([2 => $entity], $collection->toArray());
+    }
+
+    public function testOffsetSetWithNullOffsetAppendsEntity(): void
+    {
+        $entity = $this->createStub(EntityInterface::class);
+        $collection = new EntityCollection([]);
+
+        $collection[] = $entity;
+
+        $this->assertSame([$entity], $collection->toArray());
+    }
+
+    public function testOffsetSetWithNonIntegerOffsetThrowsException(): void
+    {
+        $collection = new EntityCollection([]);
+
+        $this->expectException(\InvalidArgumentException::class);
+        $collection['key'] = $this->createStub(EntityInterface::class);
+    }
+
+    public function testOffsetSetWithIntegerOffsetSetsEntity(): void
+    {
+        $entity = $this->createStub(EntityInterface::class);
+        $collection = new EntityCollection([]);
+
+        $collection[2] = $entity;
+
+        $this->assertSame([2 => $entity], $collection->toArray());
+    }
+
+    public function testOffsetGetRejectsInvalidStoredItem(): void
+    {
+        $collection = new EntityCollection([]);
+        $property = new \ReflectionProperty(ArrayCollection::class, 'elements');
+        $property->setValue($collection, [0 => new \stdClass()]);
 
         $this->expectException(\UnexpectedValueException::class);
-        $this->expectExceptionMessageIs(sprintf(
-            'Expected an instance of <%s> or null, got <%s>.',
-            EntityInterface::class,
-            \stdClass::class,
-        ));
-        $entityObjectCollection->offsetGet(0);
+        $collection->offsetGet(0);
+    }
+
+    public function testOffsetSetWithInvalidItemThrowsException(): void
+    {
+        $entityObjectCollection = new EntityCollection([]);
+
+        $this->expectException(\InvalidArgumentException::class);
+        $entityObjectCollection[0] = new \stdClass();
     }
 
     public function testContainsWithInvalidArgumentThrowsException(): void
