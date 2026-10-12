@@ -41,6 +41,23 @@ class EntityCollectionQueryResponseTest extends TestCase
         $this->assertSame($arrayItemsAmount, $queryResponse->getTotal());
     }
 
+    public function testHasNextPageIsFalseWhenCollectionDoesNotContainLookaheadItem(): void
+    {
+        $entities = array_fill(0, 10, $this->createStub(EntityInterface::class));
+        $response = new EntityCollectionQueryResponse(new EntityCollection($entities), 10, 0, 25);
+
+        $this->assertFalse($response->getHasNextPage());
+        $this->assertCount(10, $response->getCollection());
+    }
+
+    public function testHasNextPageIsFalseOnLastPageWhenCollectionIsExactlyFull(): void
+    {
+        $entities = array_fill(0, 10, $this->createStub(EntityInterface::class));
+        $response = new EntityCollectionQueryResponse(new EntityCollection($entities), 10, 2, 25);
+
+        $this->assertFalse($response->getHasNextPage());
+    }
+
     public static function dataQueryResponse(): array
     {
         return [
