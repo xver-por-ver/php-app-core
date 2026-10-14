@@ -15,6 +15,7 @@ use Doctrine\Common\Collections\ArrayCollection;
  */
 class EntityCollection extends ArrayCollection
 {
+    private const string INVALID_KEY_TYPE_MSG = 'Key must be an integer, %s given.';
     /**
      * @param array<int, TEntity> $elements
      *
@@ -26,7 +27,7 @@ class EntityCollection extends ArrayCollection
         foreach ($this->elements as $key => $item) {
             if (false === is_int($key)) {
                 throw new \InvalidArgumentException(
-                    sprintf('Key must be an integer, %s given.', gettype($key))
+                    sprintf(self::INVALID_KEY_TYPE_MSG, gettype($key))
                 );
             }
             if (false === is_a($item, $this->type())) {
@@ -81,7 +82,7 @@ class EntityCollection extends ArrayCollection
     {
         if (false === is_int($offset)) {
             throw new \InvalidArgumentException(
-                sprintf('Key must be an integer, %s given.', gettype($offset))
+                sprintf(self::INVALID_KEY_TYPE_MSG, gettype($offset))
             );
         }
 
@@ -124,7 +125,7 @@ class EntityCollection extends ArrayCollection
     {
         if (false === is_int($key)) {
             throw new \InvalidArgumentException(
-                sprintf('Key must be an integer, %s given.', gettype($key))
+                sprintf(self::INVALID_KEY_TYPE_MSG, gettype($key))
             );
         }
         $this->assertEntityType($value);
@@ -145,7 +146,7 @@ class EntityCollection extends ArrayCollection
         }
         if (false === is_int($offset)) {
             throw new \InvalidArgumentException(
-                sprintf('Key must be an integer, %s given.', gettype($offset))
+                sprintf(self::INVALID_KEY_TYPE_MSG, gettype($offset))
             );
         }
         $this->set($offset, $value);
