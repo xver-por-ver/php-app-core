@@ -152,6 +152,11 @@ class EntityCollection extends ArrayCollection
         $this->set($offset, $value);
     }
 
+    /**
+     * @param EntityInterface|mixed $entity
+     *
+     * @psalm-param TEntity|TMaybeContained $entity
+     */
     private function assertEntityType(mixed $entity): void
     {
         if (false === is_a($entity, $this->type())) {
